@@ -1,0 +1,46 @@
+version: '3'
+
+dotenv:
+  - .env
+
+includes:
+  observability:
+    taskfile: ./tasks/observability.yml
+
+tasks:
+  preflight:
+    desc: Valida variáveis locais e conectividade SSH básica com a VPS.
+    cmds:
+      - ./scripts/remote.sh preflight
+
+  install:foundryctl:
+    desc: Instala ou verifica Foundry/foundryctl na VPS.
+    cmds:
+      - task: observability:install-foundryctl
+
+  install:signoz:
+    desc: Instala ou verifica SigNoz self-hosted via Foundry/foundryctl.
+    cmds:
+      - task: observability:install-signoz
+
+  install:postgres-collector:
+    desc: Instala ou verifica o collector PostgreSQL que envia métricas ao SigNoz.
+    cmds:
+      - task: observability:install-postgres-collector
+
+  setup:
+    desc: Provisiona SigNoz e suas regras de firewall após o preflight.
+    cmds:
+      - task: preflight
+      - task: observability:firewall
+      - task: observability:install-signoz
+
+  status:
+    desc: Exibe o status remoto da observabilidade.
+    cmds:
+      - task: observability:status
+
+  destroy:
+    desc: Remove recursos de observabilidade sem alterar Coolify ou a aplicação.
+    cmds:
+      - task: observability:destroy
