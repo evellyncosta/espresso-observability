@@ -12,6 +12,7 @@ cp .env.example .env
 task preflight
 task setup
 task install:postgres-collector
+task install:application-otel-collector
 ```
 
 Para remover a plataforma:
@@ -27,5 +28,6 @@ task destroy
 - [Arquitetura](docs/architecture.md)
 - [SigNoz](docs/signoz.md)
 - [Collector PostgreSQL](docs/postgres-collector.md)
+- [Collector OTLP da aplicação](docs/application-otel-collector.md)
 - [Operação](docs/operations.md)
 - [Integração com infra](docs/infra-integration.md)

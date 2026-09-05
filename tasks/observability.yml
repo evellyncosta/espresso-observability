@@ -17,6 +17,11 @@ tasks:
     cmds:
       - ./scripts/remote.sh postgres-collector
 
+  install-application-otel-collector:
+    desc: Instala ou verifica o collector OTLP que encaminha métricas e traces da aplicação ao SigNoz.
+    cmds:
+      - ./scripts/remote.sh application-otel-collector
+
   firewall:
     desc: Configura somente as regras UFW específicas do SigNoz.
     cmds:

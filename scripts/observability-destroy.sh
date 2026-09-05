@@ -6,6 +6,8 @@ require_debian_family
 signoz_dir="${SIGNOZ_DIR:-/data/signoz}"
 collector_dir="${POSTGRES_COLLECTOR_DIR:-/data/signoz-integrations/postgres-collector}"
 collector_container="${POSTGRES_COLLECTOR_CONTAINER:-espresso-postgres-collector}"
+application_collector_dir="${APPLICATION_OTEL_COLLECTOR_DIR:-/data/signoz-integrations/application-otel-collector}"
+application_collector_container="${APPLICATION_OTEL_COLLECTOR_CONTAINER:-espresso-application-otel-collector}"
 signoz_network="${POSTGRES_COLLECTOR_SIGNOZ_NETWORK:-signoz-network}"
 signoz_ui_port="${SIGNOZ_UI_PORT:-8081}"
 remove_monitor_user="${DESTROY_POSTGRES_MONITOR_USER:-false}"
@@ -16,6 +18,7 @@ safe_operational_dir() {
 }
 safe_operational_dir "$signoz_dir"
 safe_operational_dir "$collector_dir"
+safe_operational_dir "$application_collector_dir"
 [[ "$signoz_ui_port" =~ ^[0-9]+$ ]] || die "SIGNOZ_UI_PORT deve ser numérica"
 [[ "$remove_monitor_user" == true || "$remove_monitor_user" == false ]] || die "DESTROY_POSTGRES_MONITOR_USER deve ser true ou false"
 
@@ -53,6 +56,14 @@ compose_down_if_signoz() {
 }
 
 if command -v docker >/dev/null 2>&1; then
+  if path_is_file_as_root "$application_collector_dir/docker-compose.yml"; then
+    log "removendo collector OTLP da aplicação"
+    as_root docker compose -f "$application_collector_dir/docker-compose.yml" down --volumes --remove-orphans || die "falha ao remover collector OTLP da aplicação declarado"
+  elif as_root docker inspect "$application_collector_container" >/dev/null 2>&1; then
+    log "removendo container do collector OTLP da aplicação identificado: $application_collector_container"
+    as_root docker rm -f "$application_collector_container"
+  fi
+
   if path_is_file_as_root "$collector_dir/docker-compose.yml"; then
     log "removendo collector PostgreSQL"
     as_root docker compose -f "$collector_dir/docker-compose.yml" down --volumes --remove-orphans || die "falha ao remover collector declarado"
@@ -94,6 +105,7 @@ if command -v ufw >/dev/null 2>&1; then
 fi
 
 if [[ "$remove_monitor_user" == true ]]; then drop_monitor_role; fi
+if path_is_dir_as_root "$application_collector_dir"; then log "removendo diretório operacional do collector OTLP da aplicação"; as_root rm -rf -- "$application_collector_dir"; fi
 if path_is_dir_as_root "$collector_dir"; then log "removendo diretório operacional do collector"; as_root rm -rf -- "$collector_dir"; fi
 if path_is_dir_as_root "$signoz_dir"; then log "removendo diretório operacional do SigNoz"; as_root rm -rf -- "$signoz_dir"; fi
 

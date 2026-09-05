@@ -28,6 +28,11 @@ tasks:
     cmds:
       - task: observability:install-postgres-collector
 
+  install:application-otel-collector:
+    desc: Instala ou verifica o collector OTLP de métricas e traces da aplicação.
+    cmds:
+      - task: observability:install-application-otel-collector
+
   setup:
     desc: Provisiona SigNoz e suas regras de firewall após o preflight.
     cmds:

@@ -1,0 +1,261 @@
+{
+  "spec": {
+    "display": {
+      "name": "Operation",
+      "description": "Taxas de INSERT, UPDATE, DELETE e HOT update por tabela do PostgreSQL monitorado."
+    },
+    "variables": [
+      {
+        "kind": "ListVariable",
+        "spec": {
+          "display": {
+            "name": "table.name",
+            "description": "Tabelas PostgreSQL"
+          },
+          "defaultValue": [],
+          "allowAllValue": true,
+          "allowMultiple": true,
+          "customAllValue": "",
+          "capturingRegexp": "",
+          "sort": "alphabetical-asc",
+          "plugin": {
+            "kind": "signoz/DynamicVariable",
+            "spec": {
+              "name": "postgresql.table.name",
+              "signal": "metrics"
+            }
+          },
+          "name": "table.name"
+        }
+      }
+    ],
+    "panels": {
+      "0f0ebcbe-4dc8-4d4a-9a5f-0d4a7eb74109": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Inserts por tabela",
+            "description": "Taxa de operações INSERT por tabela."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": { "timePreference": "global_time", "fillSpans": false },
+              "formatting": { "unit": "none", "decimalPrecision": "2" },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": { "fillOnlyBelow": false, "fillLessThan": "" }
+              },
+              "axes": { "softMin": 0, "softMax": null, "isLogScale": false },
+              "legend": { "position": "bottom", "mode": "list", "customColors": null },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "name": "A",
+                "plugin": {
+                  "kind": "signoz/BuilderQuery",
+                  "spec": {
+                    "name": "A",
+                    "stepInterval": 60,
+                    "signal": "metrics",
+                    "source": "",
+                    "aggregations": [{ "metricName": "postgresql.operations", "temporality": "", "timeAggregation": "increase", "spaceAggregation": "sum", "reduceTo": "sum" }],
+                    "disabled": false,
+                    "filter": { "expression": "operation = 'ins' AND postgresql.table.name IN $table.name" },
+                    "groupBy": [{ "name": "postgresql.table.name", "signal": "", "fieldContext": "resource", "fieldDataType": "string" }],
+                    "order": [],
+                    "having": { "expression": "" },
+                    "legend": "{{postgresql.table.name}}"
+                  }
+                }
+              }
+            }
+          ],
+          "links": []
+        }
+      },
+      "71b53d3e-89d4-4648-bf21-f5b7e6c1c0f3": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Updates por tabela",
+            "description": "Taxa de operações UPDATE por tabela."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": { "timePreference": "global_time", "fillSpans": false },
+              "formatting": { "unit": "none", "decimalPrecision": "2" },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": { "fillOnlyBelow": false, "fillLessThan": "" }
+              },
+              "axes": { "softMin": 0, "softMax": null, "isLogScale": false },
+              "legend": { "position": "bottom", "mode": "list", "customColors": null },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "name": "A",
+                "plugin": {
+                  "kind": "signoz/BuilderQuery",
+                  "spec": {
+                    "name": "A",
+                    "stepInterval": 60,
+                    "signal": "metrics",
+                    "source": "",
+                    "aggregations": [{ "metricName": "postgresql.operations", "temporality": "", "timeAggregation": "increase", "spaceAggregation": "sum", "reduceTo": "sum" }],
+                    "disabled": false,
+                    "filter": { "expression": "operation = 'upd' AND postgresql.table.name IN $table.name" },
+                    "groupBy": [{ "name": "postgresql.table.name", "signal": "", "fieldContext": "resource", "fieldDataType": "string" }],
+                    "order": [],
+                    "having": { "expression": "" },
+                    "legend": "{{postgresql.table.name}}"
+                  }
+                }
+              }
+            }
+          ],
+          "links": []
+        }
+      },
+      "c99d25cf-d5ad-4c8b-9159-9b3f1cdfe12a": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Deletes por tabela",
+            "description": "Taxa de operações DELETE por tabela."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": { "timePreference": "global_time", "fillSpans": false },
+              "formatting": { "unit": "none", "decimalPrecision": "2" },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": { "fillOnlyBelow": false, "fillLessThan": "" }
+              },
+              "axes": { "softMin": 0, "softMax": null, "isLogScale": false },
+              "legend": { "position": "bottom", "mode": "list", "customColors": null },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "name": "A",
+                "plugin": {
+                  "kind": "signoz/BuilderQuery",
+                  "spec": {
+                    "name": "A",
+                    "stepInterval": 60,
+                    "signal": "metrics",
+                    "source": "",
+                    "aggregations": [{ "metricName": "postgresql.operations", "temporality": "", "timeAggregation": "increase", "spaceAggregation": "sum", "reduceTo": "sum" }],
+                    "disabled": false,
+                    "filter": { "expression": "operation = 'del' AND postgresql.table.name IN $table.name" },
+                    "groupBy": [{ "name": "postgresql.table.name", "signal": "", "fieldContext": "resource", "fieldDataType": "string" }],
+                    "order": [],
+                    "having": { "expression": "" },
+                    "legend": "{{postgresql.table.name}}"
+                  }
+                }
+              }
+            }
+          ],
+          "links": []
+        }
+      },
+      "bfebce9c-458b-4d7a-a2bd-6d4657c82336": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "HOT updates por tabela",
+            "description": "Taxa de atualizações heap-only (HOT) por tabela."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": { "timePreference": "global_time", "fillSpans": false },
+              "formatting": { "unit": "none", "decimalPrecision": "2" },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": { "fillOnlyBelow": false, "fillLessThan": "" }
+              },
+              "axes": { "softMin": 0, "softMax": null, "isLogScale": false },
+              "legend": { "position": "bottom", "mode": "list", "customColors": null },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "name": "A",
+                "plugin": {
+                  "kind": "signoz/BuilderQuery",
+                  "spec": {
+                    "name": "A",
+                    "stepInterval": 60,
+                    "signal": "metrics",
+                    "source": "",
+                    "aggregations": [{ "metricName": "postgresql.operations", "temporality": "", "timeAggregation": "increase", "spaceAggregation": "sum", "reduceTo": "sum" }],
+                    "disabled": false,
+                    "filter": { "expression": "operation = 'hot_upd' AND postgresql.table.name IN $table.name" },
+                    "groupBy": [{ "name": "postgresql.table.name", "signal": "", "fieldContext": "resource", "fieldDataType": "string" }],
+                    "order": [],
+                    "having": { "expression": "" },
+                    "legend": "{{postgresql.table.name}}"
+                  }
+                }
+              }
+            }
+          ],
+          "links": []
+        }
+      }
+    },
+    "layouts": [
+      {
+        "kind": "Grid",
+        "spec": {
+          "items": [
+            { "x": 0, "y": 0, "width": 6, "height": 4, "content": { "$ref": "#/spec/panels/0f0ebcbe-4dc8-4d4a-9a5f-0d4a7eb74109" } },
+            { "x": 6, "y": 0, "width": 6, "height": 4, "content": { "$ref": "#/spec/panels/71b53d3e-89d4-4648-bf21-f5b7e6c1c0f3" } },
+            { "x": 0, "y": 4, "width": 6, "height": 4, "content": { "$ref": "#/spec/panels/c99d25cf-d5ad-4c8b-9159-9b3f1cdfe12a" } },
+            { "x": 6, "y": 4, "width": 6, "height": 4, "content": { "$ref": "#/spec/panels/bfebce9c-458b-4d7a-a2bd-6d4657c82336" } }
+          ]
+        }
+      }
+    ],
+    "duration": "",
+    "refreshInterval": "",
+    "links": []
+  },
+  "tags": [
+    { "key": "tag", "value": "postgres" },
+    { "key": "tag", "value": "database" },
+    { "key": "tag", "value": "operations" }
+  ],
+  "image": ""
+}
